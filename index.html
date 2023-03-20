@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width" , initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" >
+    <title>Password Generator</title>
+
+    <style>
+        body{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: #43A047 ;
+        }
+        .container{
+            width: 450px;
+            background:#fff;
+            border-radius:8px;
+        }
+
+        .container h2{
+            font-weight: 600;
+            font-size: 1.31rem;
+            padding: 1rem 1.75rem;
+            border-bottom: 1px solid #d4dbc5;
+        }
+
+        .wrapper{
+            margin: 1.25rem 1.75rem;
+            padding-bottom: 2rem;
+        }
+        .wrapper .input-box{
+            position: relative;
+
+        }
+
+        .input-box input{
+            width:100%;
+            height: 53px;
+            color:#000;
+            background: none;
+            font-size: 1.06rem;
+            text-decoration: none;
+            font-weight: 500;
+            border-radius: 4px;
+            letter-spacing: 1.4px;
+            border: 1px solid #aaa;
+            /* padding: 0 2.85rem 0 1rem; */
+        }
+
+        .wrapper .pass-indicator{
+            width:100%;
+            height: 4px;
+            position: relative;
+            margin-top: 0.75rem;
+        }
+        .pass-indicator::before{
+            position:absolute;
+            content: "";
+            height:100%;
+            width: 50%;
+            border-radius: inherit;
+            transition: width 0.3s ease;
+        }
+
+        .wrapper .pass-length{
+            margin: 1.56rem 0 1.25rem;
+        }
+        .pass-length .details{
+            display: flex;
+            justify-content: space-between;
+        }
+        .pass-length input{
+            width: 100%;
+            height: 5px;
+        }
+
+        .pass-setting .pass-options{
+            display: flex;
+            list-style: none;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .pass-setting .pass-options .option{
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            width: calc(100% / 2);
+        }
+        .pass-options .option:first-child{
+            pointer-events: none;
+        }
+        .pass-options .option:first-child input{
+            opacity: 0.7;
+        }
+
+        .pass-options .option input{
+            height: 16px;
+            width: 16px;
+            cursor: pointer;
+        }
+
+        .wrapper #generate-password{
+            width: 100%;
+            color:#fff;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            background-color: #43A047;
+            font-size: 1.06rem;
+            padding: 0.95rem 0;
+            border-radius: 10px;
+            text-transform: uppercase;
+            margin: 0.95rem 0 1.3rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2> Pass  Generator</h2>
+        <div class="wrapper">
+            <div class="input-box">
+                <input type="text">
+            </div>
+            
+                <div class="pass-length">
+                    <div class="details">
+                        <label class="title">Password Length</label>
+                    </div>
+                    <input type="range" min="1" max="30" value="value" step="1" color = "blue">
+                </div>
+                <div class="pass-indicator"></div>
+                <div class="pass-setting">
+
+                    <div class="details">
+                        <label class="title">Pass Settings</label>
+                    </div>
+                    <ul class="pass-options">
+                        <li class="option">
+                            <input type="checkbox" id = "lowercase" checked>
+                            <label for = "lowercase"> lowercase (a-z)</label>
+                        </li>
+                        <li class="option">
+                            <input type="checkbox" id = "uppercase" >
+                            <label for = "uppercase"> Uppercase (A-Z)</label>
+                        </li>
+                        <li class="option">
+                            <input type="checkbox" id = "number" >
+                            <label for = "number"> Number (1-9)</label>
+                        </li>
+                        <li class="option">
+                            <input type="checkbox" id = "symbols">
+                            <label for = "symbols"> Symbols (!-$%^&*)</label>
+                        </li>
+                        <li class="option">
+                            <input type="checkbox" id = "excluded" >
+                            <label for = "excluded"> Exclude Duplicate </label>
+                        </li>
+                        <li class="option">
+                            <input type="checkbox" id = "spaces">
+                            <label for = "spaces"> Include Spaces</label>
+                        </li>                    
+                    </ul>
+                </div>
+                <button id="generate-password">Generate Password</button>
+            </div>
+        
+    </div>
+    <script>
+        const lengthSlider = document.querySelector(".pass-length input");
+        const options = document.querySelectorAll(".option input");
+        const passwordInput = document.querySelector(".input-box input");
+        const passIndicator = document.querySelector(".pass-indicator");
+        const generateBtn = document.querySelector("#generate-password");
+
+        const characters = {
+            lowercase: "abcdefghijklmnopqrstuvwxyz",
+            uppercase: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+            numbers: "0123456789",
+            symbols: "!$%&|[](){}:;.,*+-#@<>~"
+        }
+
+        const generatePassword = () => {
+            let staticPassword = "",
+                randomPassword = "",
+                excludeDuplicate = false,
+                passLength = lengthSlider.value;
+
+            options.forEach(option => {
+                if (option.checked) {
+                    console.log(option)
+                    if (option.id !== "excluded" && option.id !== "spaces") {
+                        staticPassword += characters[option.id];
+                    } else if (option.id === "spaces") {
+                        staticPassword += `  ${staticPassword}  `;
+                    } else {
+                        excludeDuplicate = true;
+                    }
+                }
+            });
+
+            for (let i = 0; i < passLength; i++) {
+                let randomChar = staticPassword[Math.floor(Math.random() * staticPassword.length)];
+                if (excludeDuplicate) {
+                    !randomPassword.includes(randomChar) || randomChar == " " ? randomPassword += randomChar : i--;
+                } else {
+                    randomPassword += randomChar;
+                }
+            }
+            passwordInput.value = randomPassword;
+
+        }
+
+
+        const updateSlider = () => {
+            generatePassword();
+        }
+        updateSlider();
+
+
+        lengthSlider.addEventListener("input", updateSlider);
+        generateBtn.addEventListener("click", generatePassword);
+                
+    </script>
+</body>
+</html>
