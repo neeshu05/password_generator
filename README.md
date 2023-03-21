@@ -1,3 +1,3 @@
 # password_generator
 
-![alt text](https://github.com/neeshu05/password_generator/blob/[branch]/image.jpg?raw=true)
+![alt text](https://github.com/neeshu05/password_generator/blob/[branch]/Web capture_20-3-2023_231737_127.0.0.1.jpeg?raw=true)
